@@ -1,21 +1,17 @@
 package org.johan.controllers;
 
-import org.johan.models.Item;
-import org.johan.services.FilterService; 
-import org.johan.services.ItemService;
+import static spark.Spark.*;
 import com.google.gson.Gson;
+import org.johan.models.Item;
+import org.johan.services.ItemService;
 import java.util.List;
-import static spark.Spark.get;
-import static spark.Spark.post;
 
 /**
- * ItemController
- * Handles all HTTP routes related to items and filtering.
+ * Controller that manages all routes for Items.
  */
 public class ItemControllers {
 
     private final ItemService itemService = new ItemService();
-    private final FilterService filterService = new FilterService();
     private final Gson gson = new Gson();
 
     public ItemControllers() {
@@ -24,50 +20,14 @@ public class ItemControllers {
 
     private void defineRoutes() {
 
+        // GET /items → Retrieve all items
         get("/items", (req, res) -> {
             res.type("application/json");
-
-            // Obtener parámetros de la query (siguen siendo String)
-            String category = req.queryParams("category");
-            String minPriceStr = req.queryParams("minprice");
-            String maxPriceStr = req.queryParams("maxprice");
-            // Podríamos añadir filtro de disponibilidad si quisiéramos
-            // String availableStr = req.queryParams("available");
-
-            // Convertir precios String a Double (manejar nulls)
-            Double minPrice = null;
-            if (minPriceStr != null && !minPriceStr.isEmpty()) {
-                try {
-                    minPrice = Double.parseDouble(minPriceStr);
-                } catch (NumberFormatException e) {
-                    // Opcional: Manejar error si el precio no es un número válido
-                    System.err.println("Invalid minPrice format: " + minPriceStr);
-                    // Podrías devolver un error 400 aquí
-                }
-            }
-
-            Double maxPrice = null;
-            if (maxPriceStr != null && !maxPriceStr.isEmpty()) {
-                try {
-                    maxPrice = Double.parseDouble(maxPriceStr);
-                } catch (NumberFormatException e) {
-                    System.err.println("Invalid maxPrice format: " + maxPriceStr);
-                }
-            }
-
-            // Boolean available = availableStr != null ? Boolean.parseBoolean(availableStr) : null;
-
-            // Obtener TODOS los items primero
-            List<Item> allItems = itemService.getAllItems();
-
-            // Aplicar filtros usando la INSTANCIA y pasando TODOS los argumentos
-            // Pasamos null para 'available' ya que no lo estamos usando aún
-            List<Item> filteredItems = filterService.applyFilters(allItems, category, minPrice, maxPrice, null);
-
-            return gson.toJson(filteredItems); // Devolver la lista (filtrada o completa)
+            List<Item> items = itemService.getAllItems();
+            return gson.toJson(items);
         });
 
-        // Get an item by ID (sin cambios)
+        // GET /items/:id → Retrieve item by ID
         get("/items/:id", (req, res) -> {
             res.type("application/json");
             String id = req.params(":id");
@@ -77,23 +37,62 @@ public class ItemControllers {
                 res.status(404);
                 return gson.toJson(new ResponseMessage("Item not found"));
             }
+
             return gson.toJson(item);
         });
 
-        // Add a new item (sin cambios)
+        // POST /items → Add a new item
         post("/items", (req, res) -> {
             res.type("application/json");
             Item newItem = gson.fromJson(req.body(), Item.class);
-            // Podríamos añadir validación aquí antes de añadir
-            Item createdItem = itemService.addItem(newItem);
+            itemService.addItem(newItem);
             res.status(201);
-            return gson.toJson(createdItem);
+            return gson.toJson(newItem);
+        });
+
+        // PUT /items/:id → Edit an existing item
+        put("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            Item updatedItem = gson.fromJson(req.body(), Item.class);
+            Item result = itemService.updateItem(id, updatedItem);
+
+            if (result == null) {
+                res.status(404);
+                return gson.toJson(new ResponseMessage("Item not found"));
+            }
+
+            return gson.toJson(result);
+        });
+
+        // OPTIONS /items/:id → Check whether an item with the given ID exists
+        options("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            boolean exists = itemService.getItemById(id) != null;
+            return gson.toJson(new ResponseMessage("Item exists: " + exists));
+        });
+
+        // DELETE /items/:id → Delete a specific item
+        delete("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            boolean deleted = itemService.deleteItemById(id);
+
+            if (!deleted) {
+                res.status(404);
+                return gson.toJson(new ResponseMessage("Item not found or already deleted"));
+            }
+
+            return gson.toJson(new ResponseMessage("Item deleted successfully"));
         });
     }
 
-    // Simple internal response message class (sin cambios)
+    // Helper message class for JSON responses
     private static class ResponseMessage {
         String message;
-        public ResponseMessage(String msg) { this.message = msg; }
+        ResponseMessage(String message) {
+            this.message = message;
+        }
     }
 }
