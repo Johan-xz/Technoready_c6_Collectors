@@ -1,48 +1,23 @@
 package org.johan.models;
 
-import java.util.UUID;
-
-/**
- * Represents a user in the system.
- */
+// Un "POJO" (Plain Old Java Object)
+// Solo guarda los datos del usuario.
 public class User {
-
     private String id;
     private String name;
     private String email;
 
-    public User() {
-        this.id = UUID.randomUUID().toString();
-    }
-
-    public User(String name, String email) {
-        this.id = UUID.randomUUID().toString();
-        this.name = name;
-        this.email = email;
-    }
-
-    // Getters & Setters
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
+    public User(String id, String name, String email) {
         this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
     }
+
+    // Getters y Setters (necesarios para que GSON funcione bien)
+    public String getId() { return id; }
+    public String getName() { return name; }
+    public String getEmail() { return email; }
+
+    public void setName(String name) { this.name = name; }
+    public void setEmail(String email) { this.email = email; }
 }

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Tienda de Ramón</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container"> 
+    <h1>Bienvenido a la Tienda de Coleccionables, {{username}}!</h1>
+
+    <form action="/tienda" method="get">
+        <div>
+            <label for="categoria">Filtrar por Categoría:</label>
+            <input type="text" id="categoria" name="categoria" value="{{filtroCategoria}}">
+            
+            <label for="precioMax">Precio Máximo:</label>
+            <input type="number" id="precioMax" name="precioMax" step="0.01" value="{{filtroPrecio}}">
+            
+            <button type="submit" class="btn">Filtrar</button>
+            <a href="/tienda">Limpiar Filtros</a>
+        </div>
+    </form>
+    
+    <hr>
+    
+    <h2>Vender un nuevo Artículo</h2>
+    <form action="/items" method="post">
+        <div>
+            <label for="itemName">Nombre:</label>
+            <input type="text" id="itemName" name="itemName" required>
+        </div>
+        <div>
+            <label for="itemPrice">Precio:</label>
+            <input type="number" id="itemPrice" name="itemPrice" step="0.01" min="0" required>
+        </div>
+        <div>
+            <label for="itemCategory">Categoría:</label>
+            <input type="text" id="itemCategory" name="itemCategory">
+        </div>
+        <button type="submit" class="btn btn-success">Poner en Venta</button>
+    </form>
+    
+    <hr>
+    
+    <h2>Artículos Actuales</h2>
+    <ul class="item-list"> 
+        {{#items}}
+            <li class="item-card">
+                <strong>{{name}}</strong> ({{category}}) - 
+                $<span id="precio-{{id}}">{{price}}</span>
+                
+                <form onsubmit="enviarPuja(event, '{{id}}')">
+                    <input type="number" step="0.01" id="puja-{{id}}" placeholder="Nuevo precio">
+                    <button type="submit" class="btn">Pujar</button>
+                </form>
+            </li>
+        {{/items}}
+        
+        {{^items}}
+            <p>Aún no hay artículos en venta.</p>
+        {{/items}}
+    </ul>
+
+</div> <script>
+    console.log("Conectando al WebSocket...");
+    const ws = new WebSocket("ws://localhost:4567/precios");
+    // ... (resto de tu script) ...
+    function enviarPuja(event, itemId) {
+        event.preventDefault(); 
+        const inputPuja = document.getElementById("puja-" + itemId);
+        const nuevoPrecio = inputPuja.value;
+        if (!nuevoPrecio || nuevoPrecio <= 0) {
+            alert("Introduce un precio válido.");
+            return;
+        }
+        const mensaje = `${itemId}:${nuevoPrecio}`;
+        ws.send(mensaje); 
+        inputPuja.value = "";
+    }
+</script>
+
+</body>
+</html>

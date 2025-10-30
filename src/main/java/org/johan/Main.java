@@ -1,104 +1,98 @@
 package org.johan;
 
-import org.johan.controllers.ItemControllers;
+// (Todos tus imports están correctos)
+import org.johan.controllers.ItemController;
 import org.johan.controllers.OffersControllers;
-import org.johan.controllers.UserControllers;
-
-import static spark.Spark.before;
-import static spark.Spark.internalServerError;
-import static spark.Spark.notFound;
-import static spark.Spark.options;
-import static spark.Spark.port;
-import static spark.Spark.threadPool;
-import static spark.Spark.exception;
+import org.johan.controllers.UserController;
+import org.johan.exceptions.ConflictException;
 import org.johan.exceptions.NotFoundException;
 import org.johan.exceptions.ValidationException;
-import org.johan.exceptions.ConflictException;
-import org.johan.exceptions.UnauthorizedException;
+import org.johan.models.ErrorResponse;
+import org.johan.services.ItemService;
+import org.johan.services.UserService;
+import org.johan.websocket.PriceWebSocket; // <-- Importante
 
-/**
- * Main class - Entry point for Spark Java Web Server.
- * It configures the server, sets up routes via controllers,
- * and applies response formatting and CORS policies.
- */
+import com.google.gson.Gson;
+
+import static spark.Spark.delete;
+import static spark.Spark.exception;
+import static spark.Spark.get;
+import static spark.Spark.init;
+import static spark.Spark.options;
+import static spark.Spark.path;
+import static spark.Spark.port;
+import static spark.Spark.post;
+import static spark.Spark.put;
+import static spark.Spark.staticFiles;
+import static spark.Spark.webSocket;
+
 public class Main {
-
     public static void main(String[] args) {
+        
+        // --- 1. CONFIGURACIÓN DEL SERVIDOR ---
+        port(4567);
+        staticFiles.location("/public"); 
 
-        // ----------------------------
-        // 1️⃣ Server configuration
-        // ----------------------------
-// Default port 4567 (you can override it with PORT environment variable)
-int portNumber = Integer.parseInt(System.getenv().getOrDefault("PORT", "4567"));
-port(portNumber);
-// Indicar a Spark dónde encontrar los archivos estáticos (CSS, JS, imágenes, etc.)
-spark.Spark.staticFiles.location("/public");
+        // --- 2. REGISTRO DE WEBSOCKET (DEBE IR ANTES QUE TODO) ---
+        // ¡Este es el cambio! Lo movimos aquí arriba.
+        webSocket("/precios", PriceWebSocket.class);
 
-        // Optional thread pool configuration
-        threadPool(8, 2, 5000);
+        // --- 3. INYECCIÓN DE DEPENDENCIAS ---
+        Gson gson = new Gson();
+        UserService userService = new UserService();
+        ItemService itemService = new ItemService();
+        UserController userController = new UserController(userService, gson);
+        ItemController itemController = new ItemController(itemService);
+        
+        // --- 4. REGISTRO DE RUTAS (CONTROLADORES Y EXCEPCIONES) ---
+        
+        // "Encender" el controlador de ofertas
+        new OffersControllers(); 
 
-        // ----------------------------
-        // 2️⃣ Enable CORS (for frontend testing)
-        // ----------------------------
-        before((req, res) -> {
-            res.header("Access-Control-Allow-Origin", "*");
-            res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
-            res.header("Access-Control-Allow-Headers", "Content-Type,Authorization");
-        });
-
-        options("/*", (req, res) -> {
-            res.status(200);
-            return "OK";
-        });
-
-        // ----------------------------
-        // 3️⃣ Initialize controllers (define all REST routes)
-        // ----------------------------
-        new UserControllers();   // /users endpoints
-        new ItemControllers();   // /items endpoints
-        new OffersControllers();  // /offers endpoints
-
-        // ----------------------------
-        // 4️⃣ Exception handling avanzado
-        // ----------------------------
-        exception(NotFoundException.class, (ex, req, res) -> {
-            handleError(ex, req, res, 404);
-        });
-        exception(ValidationException.class, (ex, req, res) -> {
-            handleError(ex, req, res, 400);
-        });
-        exception(ConflictException.class, (ex, req, res) -> {
-            handleError(ex, req, res, 409);
-        });
-        exception(UnauthorizedException.class, (ex, req, res) -> {
-            handleError(ex, req, res, 401);
-        });
-
-        // ----------------------------
-        // 5️⃣ Confirmation message
-        // ----------------------------
-        System.out.println("✅ Spark Java server running on: http://localhost:" + portNumber);
-        System.out.println("➡️  Available routes:");
-        System.out.println("   GET  /users");
-        System.out.println("   POST /users");
-        System.out.println("   GET  /items");
-        System.out.println("   GET  /offers");
-        System.out.println("--------------------------------------------");
-    }
-
-    // Maneja errores, retorna JSON si request es API/rest, HTML si es web.
-    private static void handleError(Exception ex, spark.Request req, spark.Response res, int statusCode) {
-        res.status(statusCode);
-        String accept = req.headers("Accept");
-        String message = ex.getMessage();
-        String path = req.pathInfo();
-        boolean isWeb = path.contains("/web") || (accept != null && accept.contains("text/html"));
-        if (!isWeb && accept != null && accept.contains("application/json")) {
+        // Manejadores de Excepciones
+        exception(NotFoundException.class, (e, req, res) -> {
+            res.status(404);
             res.type("application/json");
-            res.body("{\"error\":\"" + message.replaceAll("\"", "'" ) + "\"}");
-        } else {
-            res.type("text/html");
-            res.body("<html><body><h2>Error: " + statusCode + "</h2><p>" + message + "</p></body></html>");
-        }
+            res.body(gson.toJson(new ErrorResponse("NOT_FOUND", e.getMessage())));
+        });
+        exception(ValidationException.class, (e, req, res) -> {
+            res.status(400);
+            res.type("application/json");
+            res.body(gson.toJson(new ErrorResponse("BAD_REQUEST", e.getMessage())));
+        });
+        exception(ConflictException.class, (e, req, res) -> {
+            res.status(409);
+            res.type("application/json");
+            res.body(gson.toJson(new ErrorResponse("CONFLICT", e.getMessage())));
+        });
+        exception(Exception.class, (e, req, res) -> {
+            e.printStackTrace();
+            res.status(500);
+            res.type("application/json");
+            res.body(gson.toJson(new ErrorResponse("SERVER_ERROR", "Ocurrió un error inesperado")));
+        });
+
+        // Rutas de API (Sprint 1)
+        path("/api", () -> {
+            path("/users", () -> {
+                get("", userController::getAllUsers);
+                // Aquí faltaban tus otras rutas de user, las añado:
+                get("/:id", userController::getUserById);
+                post("", userController::createUser); 
+                put("/:id", userController::updateUser);
+                options("/:id", userController::checkUserExists);
+                delete("/:id", userController::deleteUser);
+            });
+        });
+
+        // Rutas WEB (Sprint 2)
+        get("/tienda", itemController::renderTienda);
+        post("/items", itemController::createItem);
+
+        // --- 5. INICIAR SERVIDOR (DEBE IR AL FINAL) ---
+        // init() siempre debe ir después de definir TODAS las rutas.
+        init(); 
+
+        System.out.println("Servidor Spark iniciado en http://localhost:4567");
     }
 }
