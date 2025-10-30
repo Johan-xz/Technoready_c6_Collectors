@@ -6,6 +6,8 @@ import org.johan.models.User;
 import org.johan.services.UserService;
 
 import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 import org.johan.exceptions.NotFoundException;
 import org.johan.exceptions.ValidationException;
@@ -53,7 +55,8 @@ public class UserControllers {
                 throw new ValidationException("El nombre de usuario es obligatorio");
             }
             user.put("id", UUID.randomUUID().toString());
-            users.add(user);
+            User newUser = gson.fromJson(gson.toJson(user), User.class);
+            userService.addUser(newUser);
             res.status(201);
             return gson.toJson(newUser);
         });

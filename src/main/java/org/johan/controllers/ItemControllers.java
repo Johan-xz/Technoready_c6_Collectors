@@ -196,6 +196,7 @@ public class ItemControllers {
             Double maxPrice = null;
             if (maxPriceStr != null && !maxPriceStr.isEmpty()) { try { maxPrice = Double.parseDouble(maxPriceStr); } catch (NumberFormatException e) { /* Ignorar o manejar */ } }
             List<Item> allItems = itemService.getAllItems();
+            FilterService filterService = new FilterService();
             List<Item> filteredItems = filterService.applyFilters(allItems, category, minPrice, maxPrice, null);
             return gson.toJson(filteredItems);
         });
