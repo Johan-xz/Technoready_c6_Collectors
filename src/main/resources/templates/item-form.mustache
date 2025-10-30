@@ -1,0 +1,42 @@
+{{#error}}
+    <div class="alert alert-danger">{{error}}</div>
+{{/error}}
+{{#item}}
+    <h2>Editar Artículo: {{item.name}}</h2>
+    <form action="/items-web/{{item.id}}/edit" method="post" class="item-form">
+{{/item}}
+{{^item}}
+    <h2>Añadir Nuevo Artículo</h2>
+    <form action="/items/new" method="post" class="item-form">
+{{/item}}
+
+    {{#item}}
+        <input type="hidden" name="id" value="{{item.id}}">
+    {{/item}}
+    <div class="form-group">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" name="name" value="{{item.name}}" required>
+    </div>
+    <div class="form-group">
+        <label for="category">Categoría:</label>
+        <input type="text" id="category" name="category" value="{{item.category}}" required>
+    </div>
+    <div class="form-group">
+        <label for="price">Precio:</label>
+        <input type="number" step="0.01" id="price" name="price" value="{{item.price}}" required min="0">
+    </div>
+    <div class="form-group">
+        <label for="available">Disponible:</label>
+        <input type="checkbox" id="available" name="available" value="true" {{#item.available}}checked{{/item.available}}>
+        <input type="hidden" name="available" value="false" />
+    </div>
+    <div class="form-actions">
+        {{#item}}
+            <button type="submit" class="btn btn-primary">Actualizar Artículo</button>
+        {{/item}}
+        {{^item}}
+            <button type="submit" class="btn btn-success">Añadir Artículo</button>
+        {{/item}}
+        <a href="/items-web" class="btn btn-secondary">Cancelar</a>
+    </div>
+</form>

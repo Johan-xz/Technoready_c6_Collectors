@@ -10,6 +10,9 @@ import com.google.gson.Gson;
 import static spark.Spark.get;
 import static spark.Spark.post;
 
+import org.johan.exceptions.NotFoundException;
+import org.johan.exceptions.ValidationException;
+
 /**
  * Example UserController with routes for GET and POST. johan jpohan
  */
@@ -32,6 +35,10 @@ public class UserControllers {
         // POST /users → crea un nuevo usuario
         post("/users", (req, res) -> {
             Map<String, String> user = gson.fromJson(req.body(), Map.class);
+            // Validación simple
+            if (user == null || user.get("name") == null || user.get("name").trim().isEmpty()) {
+                throw new ValidationException("El nombre de usuario es obligatorio");
+            }
             user.put("id", UUID.randomUUID().toString());
             users.add(user);
             res.status(201);
@@ -46,8 +53,7 @@ public class UserControllers {
                     return gson.toJson(user);
                 }
             }
-            res.status(404);
-            return gson.toJson(Map.of("message", "User not found"));
+            throw new NotFoundException("User not found");
         });
     }
 }

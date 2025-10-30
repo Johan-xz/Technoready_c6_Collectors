@@ -10,6 +10,11 @@ import static spark.Spark.notFound;
 import static spark.Spark.options;
 import static spark.Spark.port;
 import static spark.Spark.threadPool;
+import static spark.Spark.exception;
+import org.johan.exceptions.NotFoundException;
+import org.johan.exceptions.ValidationException;
+import org.johan.exceptions.ConflictException;
+import org.johan.exceptions.UnauthorizedException;
 
 /**
  * Main class - Entry point for Spark Java Web Server.
@@ -23,9 +28,11 @@ public class Main {
         // ----------------------------
         // 1️⃣ Server configuration
         // ----------------------------
-        // Default port 4567 (you can override it with PORT environment variable)
-        int portNumber = Integer.parseInt(System.getenv().getOrDefault("PORT", "4567"));
-        port(portNumber);
+// Default port 4567 (you can override it with PORT environment variable)
+int portNumber = Integer.parseInt(System.getenv().getOrDefault("PORT", "4567"));
+port(portNumber);
+// Indicar a Spark dónde encontrar los archivos estáticos (CSS, JS, imágenes, etc.)
+spark.Spark.staticFiles.location("/public");
 
         // Optional thread pool configuration
         threadPool(8, 2, 5000);
@@ -52,16 +59,19 @@ public class Main {
         new OffersControllers();  // /offers endpoints
 
         // ----------------------------
-        // 4️⃣ Exception handling (optional)
+        // 4️⃣ Exception handling avanzado
         // ----------------------------
-        internalServerError((req, res) -> {
-            res.type("application/json");
-            return "{\"message\":\"Internal server error\"}";
+        exception(NotFoundException.class, (ex, req, res) -> {
+            handleError(ex, req, res, 404);
         });
-
-        notFound((req, res) -> {
-            res.type("application/json");
-            return "{\"message\":\"Endpoint not found\"}";
+        exception(ValidationException.class, (ex, req, res) -> {
+            handleError(ex, req, res, 400);
+        });
+        exception(ConflictException.class, (ex, req, res) -> {
+            handleError(ex, req, res, 409);
+        });
+        exception(UnauthorizedException.class, (ex, req, res) -> {
+            handleError(ex, req, res, 401);
         });
 
         // ----------------------------
@@ -74,5 +84,21 @@ public class Main {
         System.out.println("   GET  /items");
         System.out.println("   GET  /offers");
         System.out.println("--------------------------------------------");
+    }
+
+    // Maneja errores, retorna JSON si request es API/rest, HTML si es web.
+    private static void handleError(Exception ex, spark.Request req, spark.Response res, int statusCode) {
+        res.status(statusCode);
+        String accept = req.headers("Accept");
+        String message = ex.getMessage();
+        String path = req.pathInfo();
+        boolean isWeb = path.contains("/web") || (accept != null && accept.contains("text/html"));
+        if (!isWeb && accept != null && accept.contains("application/json")) {
+            res.type("application/json");
+            res.body("{\"error\":\"" + message.replaceAll("\"", "'" ) + "\"}");
+        } else {
+            res.type("text/html");
+            res.body("<html><body><h2>Error: " + statusCode + "</h2><p>" + message + "</p></body></html>");
+        }
     }
 }
