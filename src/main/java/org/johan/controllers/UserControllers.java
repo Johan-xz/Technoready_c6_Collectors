@@ -7,6 +7,9 @@ import org.johan.services.UserService;
 
 import java.util.List;
 
+import org.johan.exceptions.NotFoundException;
+import org.johan.exceptions.ValidationException;
+
 /**
  * Controller that manages all routes for Users.
  */
@@ -44,9 +47,13 @@ public class UserControllers {
 
         // POST /users → Add a new user
         post("/users", (req, res) -> {
-            res.type("application/json");
-            User newUser = gson.fromJson(req.body(), User.class);
-            userService.addUser(newUser);
+            Map<String, String> user = gson.fromJson(req.body(), Map.class);
+            // Validación simple
+            if (user == null || user.get("name") == null || user.get("name").trim().isEmpty()) {
+                throw new ValidationException("El nombre de usuario es obligatorio");
+            }
+            user.put("id", UUID.randomUUID().toString());
+            users.add(user);
             res.status(201);
             return gson.toJson(newUser);
         });
@@ -62,8 +69,7 @@ public class UserControllers {
                 res.status(404);
                 return gson.toJson(new ResponseMessage("User not found"));
             }
-
-            return gson.toJson(result);
+            throw new NotFoundException("User not found");
         });
 
         // OPTIONS /users/:id → Check whether a user with given ID exists

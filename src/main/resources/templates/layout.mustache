@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{title}} - Coleccionables de Ramón</title>
+    <!-- Asumimos que tendrás un archivo CSS en src/main/resources/public/styles.css -->
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Tienda de Coleccionables de Ramón</h1>
+        <nav>
+            <a href="/items-web">Ver Artículos</a> |
+            <a href="/offers-web">Ver Ofertas</a> |
+            <!-- Enlace al formulario que crearemos después -->
+            <a href="/items/new">Añadir Artículo (Admin)</a>
+        </nav>
+    </header>
+
+    <main class="container">
+        {{#message}}
+            <div class="alert alert-info">{{message}}</div>
+        {{/message}}
+        <!-- El contenido específico de cada página se insertará aquí -->
+        {{{body}}}
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Coleccionables de Ramón. Desarrollado por Rafael.</p>
+    </footer>
+
+    <!-- Asumimos que tendrás un archivo JS en src/main/resources/public/script.js -->
+    <script src="/script.js"></script>
+</body>
+</html>

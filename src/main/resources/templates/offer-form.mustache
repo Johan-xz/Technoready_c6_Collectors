@@ -1,0 +1,33 @@
+{{#partial "body"}}
+    <h2>{{#offer}}Editar Oferta{{/offer}}{{^offer}}Crear Nueva Oferta{{/offer}}</h2>
+    {{#error}}
+        <div class="alert alert-danger">{{error}}</div>
+    {{/error}}
+    <form action="{{#offer}}/offers/{{offer.id}}/edit{{/offer}}{{^offer}}/offers/new{{/offer}}" method="post" class="offer-form">
+        {{#offer}}
+            <input type="hidden" name="id" value="{{offer.id}}">
+        {{/offer}}
+        <div class="form-group">
+            <label for="itemId">ID del Item:</label>
+            <input type="text" id="itemId" name="itemId" value="{{offer.itemId}}" required>
+        </div>
+        <div class="form-group">
+            <label for="discountPercentage">Descuento (%):</label>
+            <input type="number" id="discountPercentage" name="discountPercentage" value="{{offer.discountPercentage}}" step="0.01" min="1" max="100" required>
+        </div>
+        <div class="form-group">
+            <label for="validUntil">Válida Hasta:</label>
+            <input type="date" id="validUntil" name="validUntil" value="{{offer.validUntil}}" required>
+        </div>
+        <div class="form-actions">
+            {{#offer}}
+                <button type="submit" class="btn btn-primary">Actualizar Oferta</button>
+            {{/offer}}
+            {{^offer}}
+                <button type="submit" class="btn btn-success">Crear Oferta</button>
+            {{/offer}}
+            <a href="/offers-web" class="btn btn-secondary">Cancelar</a>
+        </div>
+    </form>
+{{/partial}}
+{{> layout.mustache}}
