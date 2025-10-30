@@ -1,5 +1,7 @@
 package org.johan.controllers;
 
+import static spark.Spark.*;
+import com.google.gson.Gson;
 import org.johan.models.Item;
 import org.johan.services.FilterService;
 import org.johan.services.ItemService;
@@ -26,7 +28,6 @@ import static spark.Spark.delete;
 public class ItemControllers {
 
     private final ItemService itemService = new ItemService();
-    private final FilterService filterService = new FilterService();
     private final Gson gson = new Gson();
     // Instancia del motor de plantillas
     private final MustacheTemplateEngine templateEngine = new MustacheTemplateEngine();
@@ -209,6 +210,7 @@ public class ItemControllers {
                 res.status(404);
                 return gson.toJson(new ResponseMessage("Item not found"));
             }
+
             return gson.toJson(item);
         });
 
@@ -218,7 +220,44 @@ public class ItemControllers {
             Item newItem = gson.fromJson(req.body(), Item.class);
             Item createdItem = itemService.addItem(newItem);
             res.status(201);
-            return gson.toJson(createdItem);
+            return gson.toJson(newItem);
+        });
+
+        // PUT /items/:id → Edit an existing item
+        put("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            Item updatedItem = gson.fromJson(req.body(), Item.class);
+            Item result = itemService.updateItem(id, updatedItem);
+
+            if (result == null) {
+                res.status(404);
+                return gson.toJson(new ResponseMessage("Item not found"));
+            }
+
+            return gson.toJson(result);
+        });
+
+        // OPTIONS /items/:id → Check whether an item with the given ID exists
+        options("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            boolean exists = itemService.getItemById(id) != null;
+            return gson.toJson(new ResponseMessage("Item exists: " + exists));
+        });
+
+        // DELETE /items/:id → Delete a specific item
+        delete("/items/:id", (req, res) -> {
+            res.type("application/json");
+            String id = req.params(":id");
+            boolean deleted = itemService.deleteItemById(id);
+
+            if (!deleted) {
+                res.status(404);
+                return gson.toJson(new ResponseMessage("Item not found or already deleted"));
+            }
+
+            return gson.toJson(new ResponseMessage("Item deleted successfully"));
         });
 
         // Aquí podrías añadir las rutas PUT y DELETE para la API si las necesitas
@@ -230,6 +269,8 @@ public class ItemControllers {
     // Clase interna para mensajes de respuesta JSON
     private static class ResponseMessage {
         String message;
-        public ResponseMessage(String msg) { this.message = msg; }
+        ResponseMessage(String message) {
+            this.message = message;
+        }
     }
 }
