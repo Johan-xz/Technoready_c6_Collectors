@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Ofertas Especiales</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Ofertas Especiales</h1>
+    <p>
+        <a href="/tienda">Volver a la tienda</a> | 
+        <a href="/offers/new" class="btn btn-success">Crear Nueva Oferta</a>
+    </p>
+
+    {{#message}}
+        <div class="alert alert-success">{{message}}</div>
+    {{/message}}
+
+    <h2>Ofertas Activas</h2>
+    <div class="offer-list">
+        {{#offers}}
+            <div class="offer-card">
+                <p><strong>Item ID:</strong> {{itemId}}</p>
+                <p><strong>Descuento:</strong> {{discountPercentage}}%</p>
+                <p><strong>Válido hasta:</strong> {{validUntil}}</p>
+            </div>
+        {{/offers}}  {{^offers}}
+            <p>No hay ofertas especiales en este momento.</p>
+        {{/offers}}
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Crear Nueva Oferta</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+<div class="container">
+    <h1>Crear Nueva Oferta</h1>
+    <p><a href="/offers-web">Volver a Ofertas</a></p>
+
+    {{#error}}
+        <div class="alert alert-danger">{{error}}</div>
+    {{/error}}
+
+    <form action="/offers/new" method="post">
+        <div class="form-group">
+            <label for="itemId">ID del Artículo:</label>
+            <input type="text" id="itemId" name="itemId" value="{{offer.itemId}}" required>
+        </div>
+        <div class="form-group">
+            <label for="discountPercentage">Porcentaje de Descuento (%):</label>
+            <input type="number" id="discountPercentage" name="discountPercentage" value="{{offer.discountPercentage}}" step="1" min="1" max="100" required>
+        </div>
+        <div class="form-group">
+            <label for="validUntil">Válido Hasta (YYYY-MM-DD):</label>
+            <input type="date" id="validUntil" name="validUntil" value="{{offer.validUntil}}" required>
+        </div>
+        <button type="submit" class="btn btn-success">Guardar Oferta</button>
+    </form>
+</div>
+</body>
+</html>
