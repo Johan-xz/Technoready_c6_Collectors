@@ -1,6 +1,5 @@
 package org.johan;
 
-// (Todos tus imports están correctos)
 import org.johan.controllers.ItemController;
 import org.johan.controllers.OffersControllers;
 import org.johan.controllers.UserController;
@@ -10,7 +9,7 @@ import org.johan.exceptions.ValidationException;
 import org.johan.models.ErrorResponse;
 import org.johan.services.ItemService;
 import org.johan.services.UserService;
-import org.johan.websocket.PriceWebSocket; // <-- Importante
+import org.johan.websocket.PriceWebSocket;
 
 import com.google.gson.Gson;
 
