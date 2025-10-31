@@ -192,7 +192,7 @@ Deliverables
 
 ## ⚙️ Stage 2 — In Development
 
-Status: 🚧 Ongoing
+Status: ✅ Completed
 Objectives
 
     Add exception handling module.
@@ -295,7 +295,6 @@ Collectors_ecommerce/
 │   │   │   ├── offer-form.mustache
 │   │   │   ├── offers.mustache
 │   │   │   └── tienda.mustache
-│   │   ├── Main.java
 │   ├── main/java/org/johan/
 │   │   ├── Main.java
 │   │   ├── controllers/
