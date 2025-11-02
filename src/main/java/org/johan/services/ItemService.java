@@ -11,7 +11,7 @@ public class ItemService {
     private List<Item> items = new ArrayList<>();
     
     // --- 1. CONECTAMOS EL NUEVO SERVICIO DE FILTROS ---
-    private FilterService filterService;
+    private final FilterService filterService;
 
     public ItemService() {
         // Datos de prueba
