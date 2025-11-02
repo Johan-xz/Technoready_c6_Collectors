@@ -107,6 +107,50 @@ Offers
           ▼
    [ Filter Items by Criteria ]
 ```
+## 🏆 Proficient-Level Justification
+
+This project achieves the C2 (Proficient) level by demonstrating leadership and creativity through strategic architecture and the integration of diverse, innovative solutions.
+
+1. Technical Knowledge & OOP
+The project demonstrates "leadership and creativity" by implementing a strategic 3-Tier (Model-Service-Controller) architecture. This is a significant step beyond basic MVC.
+
+How to Implement: This architecture "organizes and justifies strategies":
+
+- models/: (e.g., User.java, Item.java) Pure data structures (POJOs).
+- services/: (e.g., UserService.java) Contains all business logic, validation, and data handling.
+- controllers/: (e.g., UserController.java) Purely responsible for handling HTTP requests and responses.
+
+Result: This separation makes the project highly scalable, maintainable, and easy to test, proving a C2-level understanding of OOP principles and system design.
+
+2. Maven Configuration & Routing
+Routing is strategically designed to handle a "complex scenario": a hybrid app serving both an API and a Web UI.
+
+How to Implement: In Main.java, routes are organized into "diverse processes" (C2) using path() groups:
+
+- path("/api", ...): Groups all JSON-based RESTful endpoints.
+- get("/tienda", ...): Serves the server-side rendered HTML views.
+- webSocket("/precios", ...): Handles the real-time data stream.
+
+Result: This strategy ensures no route collisions and provides a clear, scalable guide for adding future modules.
+
+3. Exception Handling
+The project implements a "versatile REST API solution" (C2) by "establishing guides and best practices" (C2) for error handling.
+
+How to Implement: Instead of littering controllers with try-catch blocks, this project uses a centralized exception handling mechanism in Main.java.
+
+- Custom exceptions (e.g., NotFoundException.java) are created in the exceptions/ package.
+- Services and Controllers throw these specific exceptions.
+- Main.java catches them using exception(NotFoundException.class, ...) and uses ErrorResponse.java to return a standardized JSON error message.
+
+Result: This is an "innovative element" that is clean, robust, and demonstrates leadership in code design.
+
+4. Filters & WebSocket Integration
+The solution "integrates advanced features for complex projects" to solve specific stakeholder (Ramón's) needs.
+
+How to Implement (Filters): Filtering is implemented at a C2-level by delegating all logic to a dedicated FilterService.java. The ItemService uses this service, demonstrating a "diverse process" (C2) that promotes code re-use and the Single Responsibility Principle.
+
+How to Implement (WebSocket): The PriceWebSocket.java handler is the key "innovative element" (C2). It solves the complex problem of real-time updates by maintaining a concurrent (thread-safe) list of all connected sessions and broadcasting price updates instantly to every client. This directly enables the live-bidding feature requested in the project narrative.
+
 
 ## 🚀 Stage 1 — Implemented Features
 
@@ -123,12 +167,32 @@ Objectives
 Deliverables
 
     Fully working REST endpoints for Users and Items.
+    
     README.md and technical documentation.
+    
     GitHub repo initialized and shared with proper access.
+    
+    Configured pom.xml with spark-core, gson, and slf4j-simple (Logback).
+    
+    Implemented full CRUD API for users at path("/api", ...):
+    
+    GET /api/users
+    
+    GET /api/users/:id
+    
+    POST /api/users
+    
+    PUT /api/users/:id
+    
+    DELETE /api/users/:id
+    
+    OPTIONS /api/users/:id
+    
+    Established the 3-Tier architecture (models/, services/, controllers/).
 
 ## ⚙️ Stage 2 — In Development
 
-Status: 🚧 Ongoing
+Status: ✅ Completed
 Objectives
 
     Add exception handling module.
@@ -139,10 +203,14 @@ Objectives
 
 Deliverables
 
-    ExceptionHandler.java for error responses.
+    ExceptionHandler.java for error responses, centralized exception module created.
     Offer and View templates (offers.mustache, etc.).
     Peer review notes (docs/peer-review.md).
     Updated repository structure with frontend assets.
+    Web Forms:
+    OffersControllers.java created to manage item offers.
+    offers.mustache and offer-form.mustache templates created to display and submit offers.
+    styles.css created and served from the /public static file location.
 
 ## ⚡ Stage 3 — Upcoming
 
@@ -183,6 +251,34 @@ Access API in your browser or Postman:
 
 http://localhost:4567/users
 ```
+
+The server is now running! Access the application at:
+
+Main Store: http://localhost:4567/tienda
+
+Offers Page: http://localhost:4567/offers-web
+
+User API: http://localhost:4567/api/users
+
+## 🗺️ API Endpoints
+
+GET /api/users: Retrieves a list of all users.
+
+GET /api/users/:id: Retrieves a specific user by ID.
+
+POST /api/users: Creates a new user.
+
+PUT /api/users/:id: Updates an existing user.
+
+DELETE /api/users/:id: Deletes a user.
+
+GET /offers: Retrieves a list of all offers (API).
+
+GET /offers/:id: Retrieves a specific offer by ID (API).
+
+POST /offers: Creates a new offer (API).
+
+
 ## 🗂 Repository Structure
 ``` text
 Collectors_ecommerce/
@@ -191,13 +287,27 @@ Collectors_ecommerce/
 ├── README.md
 │
 ├── src/
+│   ├── main/resources/
+│   │   ├── public/
+│   │   │   ├── script.js
+│   │   │   └── styles.css
+│   │   ├── templates/
+│   │   │   ├── offer-form.mustache
+│   │   │   ├── offers.mustache
+│   │   │   └── tienda.mustache
 │   ├── main/java/org/johan/
 │   │   ├── Main.java
 │   │   ├── controllers/
 │   │   │   ├── UserController.java
 │   │   │   ├── ItemController.java
 │   │   │   └── OfferController.java
+│   │   ├── exceptions/
+│   │   │   ├── ConflictException.java
+│   │   │   ├── NotFoundException.java
+│   │   │   ├── UnauthorizedException.java
+│   │   │   └── ValidationException.java
 │   │   ├── models/
+│   │   │   ├── ErrorResponse.java
 │   │   │   ├── User.java
 │   │   │   ├── Item.java
 │   │   │   └── Offer.java
