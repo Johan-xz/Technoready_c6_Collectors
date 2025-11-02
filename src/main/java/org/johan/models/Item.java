@@ -2,12 +2,12 @@ package org.johan.models;
 
 public class Item {
     private String id;
-    private String name;
-    private double price;
-    private String category;
+    private final String name;
+    private final double price;
+    private final String category;
     
-    // --- CAMBIO AQUÍ ---
-    // Añadimos un campo 'available' para que el FilterService funcione
+    // --- CAMBIO AQUI ---
+    // Adjuntamos un campo 'available' para que el FilterService funcione
     private boolean available; 
 
     public Item(String id, String name, double price, String category) {
@@ -24,8 +24,8 @@ public class Item {
     public double getPrice() { return price; }
     public String getCategory() { return category; }
     
-    // --- CAMBIO AQUÍ ---
-    // Añadimos el getter que faltaba
+    // --- CAMBIO AQUI ---
+    // Adjuntamos el getter que faltaba
     public boolean isAvailable() { return available; } 
     
     public void setId(String id) { this.id = id; }

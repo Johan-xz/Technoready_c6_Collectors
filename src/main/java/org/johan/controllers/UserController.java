@@ -12,8 +12,8 @@ import spark.Response;
 
 public class UserController {
 
-    private UserService userService;
-    private Gson gson;
+    private final UserService userService;
+    private  final Gson gson;
 
     public UserController(UserService userService, Gson gson) {
         this.userService = userService;
