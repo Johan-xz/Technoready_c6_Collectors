@@ -1,16 +1,19 @@
 package org.johan.controllers;
 
-import static spark.Spark.*;
-
-import com.google.gson.Gson;
-import org.johan.models.Offer;
-import org.johan.services.OfferService;
+import java.util.HashMap;
 import java.util.List;
+
 import org.johan.exceptions.NotFoundException;
 import org.johan.exceptions.ValidationException;
+import org.johan.models.Offer;
+import org.johan.services.OfferService;
+
+import com.google.gson.Gson;
+
 import spark.ModelAndView;
+import static spark.Spark.get;
+import static spark.Spark.post;
 import spark.template.mustache.MustacheTemplateEngine;
-import java.util.HashMap;
 
 /**
  * OfferController
@@ -23,7 +26,9 @@ public class OffersControllers {
     private final Gson gson = new Gson();
 
     public OffersControllers() {
+        System.out.println("[OffersControllers] Inicializando y registrando rutas...");
         defineRoutes();
+        System.out.println("[OffersControllers] Rutas registradas: /offers, /offers/:id, /offers-web, /offers/new");
     }
 
     private void defineRoutes() {
@@ -64,6 +69,7 @@ public class OffersControllers {
 
         // Vistas WEB
         get("/offers-web", (req, res) -> {
+            System.out.println("[OffersControllers] GET /offers-web");
             List<Offer> offers = offerService.getAllOffers();
             HashMap<String, Object> model = new HashMap<>();
             model.put("offers", offers);
@@ -73,6 +79,11 @@ public class OffersControllers {
             }
             return new MustacheTemplateEngine()
                 .render(new ModelAndView(model, "offers.mustache"));
+        });
+        // Soportar trailing slash
+        get("/offers-web/", (req, res) -> {
+            res.redirect("/offers-web");
+            return null;
         });
         get("/offers/new", (req, res) -> {
             HashMap<String, Object> model = new HashMap<>();
@@ -112,21 +123,10 @@ public class OffersControllers {
             model.put("offer", new Offer(itemId, discount, validUntil));
             return new MustacheTemplateEngine().render(new ModelAndView(model, "offer-form.mustache"));
         });
+        // Ruta de diagnóstico rápida para validar el registro del controlador
+        get("/offers-web-debug", (req, res) -> {
+            res.type("text/plain");
+            return "OK: offers web controller reachable";
+        });
     }
 }
-
-
-
-
-// Listo, ¡Error Handling avanzado nivel C2 implementado!
-// Resumen de lo realizado:
-// Se crearon excepciones personalizadas:
-// NotFoundException (404)
-// ValidationException (400)
-// ConflictException (409)
-// UnauthorizedException (401)
-// Se integró un manejador global de excepciones en Main.java:
-// Devuelve JSON (API) o HTML (web) según el Header Accept.
-// Status HTTP correcto y mensaje claro.
-// Se refactorizaron controladores (UserControllers.java, OffersControllers.java) para lanzar excepciones y no manejar errores localmente.
-// Se limpió código y se corrigió la validación según los modelos reales.

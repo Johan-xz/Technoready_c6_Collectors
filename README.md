@@ -3,13 +3,14 @@
 ## 📚 Table of Contents
 1. [Project Overview](#-project-overview)
 2. [Tech Stack](#-tech-stack)
-3. [Dependencies](#-dependencies)
-4. [Use Case Diagrams](#-use-case-diagrams)
+3. [Use Case Diagrams](#-use-case-diagrams)
+4. [Proficient-Level Justification](#-proficient-level-justification)
 5. [Stage 1 — Implemented Features](#-stage-1--implemented-features)
 6. [Stage 2 — In Development](#-stage-2--in-development)
 7. [Stage 3 — Upcoming](#-stage-3--upcoming)
 8. [How to Run the Project](#-how-to-run-the-project)
-9. [Repository Structure](#-repository-structure)
+9. [API Endpoints](#-api-endpoints)
+10. [Repository Structure](#-repository-structure)
 
 ---
 
@@ -37,61 +38,25 @@ This project is divided into **three development stages (Sprints)**, progressive
 
 ---
 
-## 📦 Dependencies
-
-Defined in the `pom.xml` file:
-
-```xml
-<dependencies>
-    <!-- Web framework -->
-    <dependency>
-        <groupId>com.sparkjava</groupId>
-        <artifactId>spark-core</artifactId>
-        <version>2.9.4</version>
-    </dependency>
-
-    <!-- JSON parser -->
-    <dependency>
-        <groupId>com.google.code.gson</groupId>
-        <artifactId>gson</artifactId>
-        <version>2.10.1</version>
-    </dependency>
-
-    <!-- Logging -->
-    <dependency>
-        <groupId>ch.qos.logback</groupId>
-        <artifactId>logback-classic</artifactId>
-        <version>1.5.18</version>
-    </dependency>
-
-    <!-- Testing -->
-    <dependency>
-        <groupId>org.junit.jupiter</groupId>
-        <artifactId>junit-jupiter</artifactId>
-        <version>5.10.2</version>
-        <scope>test</scope>
-    </dependency>
-</dependencies>
-```
 ## 🧩 Use Case Diagrams
 Users
 
-    Create, read, update, and delete users.
-    Retrieve user information by ID.
-    Check if a user exists.
+- Create, read, update, and delete users.
+- Retrieve user information by ID.
+- Check if a user exists.
 
 Items
 
-    Manage and filter collectible items.
-    Apply dynamic filters (category, price range, availability).
-    Create and edit item details.
-    View item offers and promotions.
+- Manage and filter collectible items.
+- Apply dynamic filters (category, price range, availability).
+- Create and edit item details.
+- View item offers and promotions.
 
 Offers
 
-    Manage promotional offers for items.
-    Display discount percentage and validity date.
-    Integrate with UI templates to display offers visually.
+- Manage promotional offers for items.
+- Display discount percentage and validity date. 
+- Integrate with UI templates to display offers visually.
 
 ```
  ┌─────────────────────┐
@@ -122,7 +87,7 @@ How to Implement: This architecture "organizes and justifies strategies":
 
 Result: This separation makes the project highly scalable, maintainable, and easy to test, proving a C2-level understanding of OOP principles and system design.
 
-2. Maven Configuration & Routing
+2. Maven Configuration & Routing: 
 Routing is strategically designed to handle a "complex scenario": a hybrid app serving both an API and a Web UI.
 
 How to Implement: In Main.java, routes are organized into "diverse processes" (C2) using path() groups:
@@ -157,24 +122,24 @@ How to Implement (WebSocket): The PriceWebSocket.java handler is the key "innova
 Status: ✅ Completed
 Objectives
 
-    Configure Maven and core dependencies (Spark, Gson, Logback).
-    Create API routes for users and items.
-    Implement CRUD support:
-        GET /users, GET /users/:id, POST /users, PUT /users/:id, DELETE /users/:id
-        Equivalent routes for /items.
-    Establish repository structure and documentation.
+- Configure Maven and core dependencies (Spark, Gson, Logback).
+- Create API routes for users and items.
+- Implement CRUD support:
+  - GET /users
+  - GET /users/:id
+  - POST /users
+  - PUT /users/:id
+  - DELETE /users/:id
+- Equivalent routes for /items.
+- Establish repository structure and documentation.
 
 Deliverables
 
-    Fully working REST endpoints for Users and Items.
-    
-    README.md and technical documentation.
-    
-    GitHub repo initialized and shared with proper access.
-    
-    Configured pom.xml with spark-core, gson, and slf4j-simple (Logback).
-    
-    Implemented full CRUD API for users at path("/api", ...):
+- Fully working REST endpoints for Users and Items.
+- README.md and technical documentation.
+- GitHub repo initialized and shared with proper access.
+- Configured pom.xml with spark-core, gson, and slf4j-simple (Logback).
+- Implemented full CRUD API for users at path("/api", ...):
     
     GET /api/users
     
@@ -188,51 +153,52 @@ Deliverables
     
     OPTIONS /api/users/:id
     
-    Established the 3-Tier architecture (models/, services/, controllers/).
+- Established the 3-Tier architecture (models/, services/, controllers/).
 
 ## ⚙️ Stage 2 — In Development
 
 Status: ✅ Completed
-Objectives
 
-    Add exception handling module.
-    Create Mustache templates and web forms for frontend representation.
-    Implement routes for item offers and integrate them with templates.
-    Conduct partial peer reviews to identify logic or integration errors.
-    Push deliverables with consistent documentation.
+### Objectives
 
-Deliverables
+- Add exception handling module.
+- Create Mustache templates and web forms for frontend representation. 
+- Implement routes for item offers and integrate them with templates. 
+- Conduct partial peer reviews to identify logic or integration errors. 
+- Push deliverables with consistent documentation.
 
-    ExceptionHandler.java for error responses, centralized exception module created.
-    Offer and View templates (offers.mustache, etc.).
-    Peer review notes (docs/peer-review.md).
-    Updated repository structure with frontend assets.
-    Web Forms:
-    OffersControllers.java created to manage item offers.
-    offers.mustache and offer-form.mustache templates created to display and submit offers.
-    styles.css created and served from the /public static file location.
+### Deliverables
+
+- ExceptionHandler.java for error responses, centralized exception module created. 
+- Offer and View templates (offers.mustache, etc.). 
+- Peer review notes (docs/peer-review.md). 
+- Updated repository structure with frontend assets. 
+- Web Forms:
+  - OffersControllers.java created to manage item offers. 
+  - offers.mustache and offer-form.mustache templates created to display and submit offers. 
+  - styles.css created and served from the /public static file location.
 
 ## ⚡ Stage 3 — Upcoming
 
 ## Status: 🔜 Planned
-Objectives
+### Objectives
 
-    Introduce a project checklist to validate all completed features.
-    Add item filters (by category, price, availability).
-    Implement WebSocket for real-time price updates.
-    Perform final peer verification and documentation updates.
-    Push deliverables and finalize project for submission.
+- Introduce a project checklist to validate all completed features. 
+- Add item filters (by category, price, availability). 
+- Implement WebSocket for real-time price updates. 
+- Perform final peer verification and documentation updates. 
+- Push deliverables and finalize project for submission.
 
-Deliverables
+### Deliverables
 
-    FilterService.java for item criteria.
-    PriceWebSocket.java for live updates.
-    Updated README.md and final report.
-    Complete feature checklist (docs/checklist.md).
+- FilterService.java for item criteria. 
+- PriceWebSocket.java for live updates. 
+- Updated README.md and final report. 
+- Complete feature checklist (docs/checklist.md).
 
 ## ▶️ How to Run the Project
 
-Clone the repository:
+### Clone the repository:
 
 ```bash
 
@@ -254,29 +220,29 @@ http://localhost:4567/users
 
 The server is now running! Access the application at:
 
-Main Store: http://localhost:4567/tienda
+- Main Store: http://localhost:4567/tienda
 
-Offers Page: http://localhost:4567/offers-web
+- Offers Page: http://localhost:4567/offers-web
 
-User API: http://localhost:4567/api/users
+- User API: http://localhost:4567/api/users
 
 ## 🗺️ API Endpoints
 
-GET /api/users: Retrieves a list of all users.
+- GET /api/users: Retrieves a list of all users.
 
-GET /api/users/:id: Retrieves a specific user by ID.
+- GET /api/users/:id: Retrieves a specific user by ID.
 
-POST /api/users: Creates a new user.
+- POST /api/users: Creates a new user.
 
-PUT /api/users/:id: Updates an existing user.
+- PUT /api/users/:id: Updates an existing user.
 
-DELETE /api/users/:id: Deletes a user.
+- DELETE /api/users/:id: Deletes a user.
 
-GET /offers: Retrieves a list of all offers (API).
+- GET /offers: Retrieves a list of all offers (API).
 
-GET /offers/:id: Retrieves a specific offer by ID (API).
+- GET /offers/:id: Retrieves a specific offer by ID (API).
 
-POST /offers: Creates a new offer (API).
+- POST /offers: Creates a new offer (API).
 
 
 ## 🗂 Repository Structure
@@ -327,5 +293,6 @@ Collectors_ecommerce/
     ├── technical_report.md
     ├── peer-review.md
     ├── checklist.md
+    ├── Docker.md
     └── api_endpoints.md
 ```
