@@ -277,9 +277,51 @@ The server is now running! Access the application at:
 
 - Main Store: http://localhost:4567/tienda
 
+<img width="2940" height="6530" alt="image" src="https://github.com/user-attachments/assets/472458b0-480e-4865-9ade-403364acada8" />
+
 - Offers Page: http://localhost:4567/offers-web
 
+<img width="2940" height="3082" alt="image" src="https://github.com/user-attachments/assets/a1dffcda-bf83-4acd-9753-37a350d9ca73" />
+
 - User API: http://localhost:4567/api/users
+
+<img width="2940" height="3438" alt="image" src="https://github.com/user-attachments/assets/067d3e59-e501-43ce-8b27-c07f4f8305db" />
+
+⚡ Stage 3 — Filters & Real-Time WebSocket Integration
+
+Status: ✅ Completed
+
+This sprint fulfills the "Development of filters and WebSocket integration" criteria at a Proficient (C2) level.
+We implemented these advanced features not just as technical functions, but as innovative elements (C2) that directly solve the core stakeholder (Ramón’s) needs for a dynamic, real-time store.
+
+🧩 C2 Justification & Key Deliverables
+🧠 C2 - Advanced Filters (A Diverse Process)
+
+Code: Filtering logic was not hard-coded. We created a dedicated FilterService.java, establishing a “guide” (C2) for this functionality.
+
+Strategy: ItemService.java now delegates all filtering logic to FilterService.
+This use of a diverse process (C2) and the Single Responsibility Principle demonstrates a high-level architectural strategy.
+
+Impact:
+The /tienda route is fully functional, using ItemController to read query parameters (?categoria=...) and pass them to the service layer.
+
+⚙️ C2 - Real-Time WebSocket (An Innovative Element)
+
+Strategy:
+This is the core innovative element (C2) of the project, solving the complex business need for real-time price updates.
+
+Backend (Code):
+PriceWebSocket.java was created to manage all client connections.
+It maintains a thread-safe (ConcurrentLinkedQueue) list of all active sessions and includes a broadcast() method to instantly send new price updates to all connected users — a robust, high-level solution.
+
+Frontend (Code):
+tienda.mustache was updated with client-side JavaScript to:
+
+Connect to the /precios WebSocket endpoint.
+
+Send a new bid to the server using ws.send().
+
+Listen for broadcasts using ws.onmessage and instantly update the item price in the HTML without a page reload.
 
 ## 🗺️ API Endpoints
 
