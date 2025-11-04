@@ -1,6 +1,7 @@
 # 🛍️ Collectors E-Commerce API
 
 ## 📚 Table of Contents
+
 1. [Project Overview](#-project-overview)
 2. [Tech Stack](#-tech-stack)
 3. [Use Case Diagrams](#-use-case-diagrams)
@@ -25,20 +26,21 @@ This project is divided into **three development stages (Sprints)**, progressive
 
 ## 🧠 Tech Stack
 
-| Category | Technology |
-|-----------|-------------|
-| Programming Language | Java 17 |
-| Web Framework | [Spark Java](http://sparkjava.com/) |
-| Build Tool | Maven |
-| Data Serialization | Gson |
-| Logging | Logback |
-| Testing Framework | JUnit 5 |
-| Version Control | Git / GitHub |
-| IDE Recommendation | IntelliJ IDEA / VS Code |
+| Category             | Technology                          |
+| -------------------- | ----------------------------------- |
+| Programming Language | Java 17                             |
+| Web Framework        | [Spark Java](http://sparkjava.com/) |
+| Build Tool           | Maven                               |
+| Data Serialization   | Gson                                |
+| Logging              | Logback                             |
+| Testing Framework    | JUnit 5                             |
+| Version Control      | Git / GitHub                        |
+| IDE Recommendation   | IntelliJ IDEA / VS Code             |
 
 ---
 
 ## 🧩 Use Case Diagrams
+
 Users
 
 - Create, read, update, and delete users.
@@ -55,7 +57,7 @@ Items
 Offers
 
 - Manage promotional offers for items.
-- Display discount percentage and validity date. 
+- Display discount percentage and validity date.
 - Integrate with UI templates to display offers visually.
 
 ```
@@ -72,12 +74,13 @@ Offers
           ▼
    [ Filter Items by Criteria ]
 ```
+
 ## 🏆 Proficient-Level Justification
 
 This project achieves the C2 (Proficient) level by demonstrating leadership and creativity through strategic architecture and the integration of diverse, innovative solutions.
 
 1. Technical Knowledge & OOP
-The project demonstrates "leadership and creativity" by implementing a strategic 3-Tier (Model-Service-Controller) architecture. This is a significant step beyond basic MVC.
+   The project demonstrates "leadership and creativity" by implementing a strategic 3-Tier (Model-Service-Controller) architecture. This is a significant step beyond basic MVC.
 
 How to Implement: This architecture "organizes and justifies strategies":
 
@@ -87,8 +90,8 @@ How to Implement: This architecture "organizes and justifies strategies":
 
 Result: This separation makes the project highly scalable, maintainable, and easy to test, proving a C2-level understanding of OOP principles and system design.
 
-2. Maven Configuration & Routing: 
-Routing is strategically designed to handle a "complex scenario": a hybrid app serving both an API and a Web UI.
+2. Maven Configuration & Routing:
+   Routing is strategically designed to handle a "complex scenario": a hybrid app serving both an API and a Web UI.
 
 How to Implement: In Main.java, routes are organized into "diverse processes" (C2) using path() groups:
 
@@ -99,7 +102,7 @@ How to Implement: In Main.java, routes are organized into "diverse processes" (C
 Result: This strategy ensures no route collisions and provides a clear, scalable guide for adding future modules.
 
 3. Exception Handling
-The project implements a "versatile REST API solution" (C2) by "establishing guides and best practices" (C2) for error handling.
+   The project implements a "versatile REST API solution" (C2) by "establishing guides and best practices" (C2) for error handling.
 
 How to Implement: Instead of littering controllers with try-catch blocks, this project uses a centralized exception handling mechanism in Main.java.
 
@@ -110,12 +113,11 @@ How to Implement: Instead of littering controllers with try-catch blocks, this p
 Result: This is an "innovative element" that is clean, robust, and demonstrates leadership in code design.
 
 4. Filters & WebSocket Integration
-The solution "integrates advanced features for complex projects" to solve specific stakeholder (Ramón's) needs.
+   The solution "integrates advanced features for complex projects" to solve specific stakeholder (Ramón's) needs.
 
 How to Implement (Filters): Filtering is implemented at a C2-level by delegating all logic to a dedicated FilterService.java. The ItemService uses this service, demonstrating a "diverse process" (C2) that promotes code re-use and the Single Responsibility Principle.
 
 How to Implement (WebSocket): The PriceWebSocket.java handler is the key "innovative element" (C2). It solves the complex problem of real-time updates by maintaining a concurrent (thread-safe) list of all connected sessions and broadcasting price updates instantly to every client. This directly enables the live-bidding feature requested in the project narrative.
-
 
 ## 🚀 Stage 1 — Implemented Features
 
@@ -140,61 +142,112 @@ Deliverables
 - GitHub repo initialized and shared with proper access.
 - Configured pom.xml with spark-core, gson, and slf4j-simple (Logback).
 - Implemented full CRUD API for users at path("/api", ...):
-    
-    GET /api/users
-    
-    GET /api/users/:id
-    
-    POST /api/users
-    
-    PUT /api/users/:id
-    
-    DELETE /api/users/:id
-    
-    OPTIONS /api/users/:id
-    
+  GET /api/users
+  GET /api/users/:id
+  POST /api/users
+  PUT /api/users/:id
+  DELETE /api/users/:id
+  OPTIONS /api/users/:id
 - Established the 3-Tier architecture (models/, services/, controllers/).
 
-## ⚙️ Stage 2 — In Development
+## ⚙️ Stage 2 — Completed
 
 Status: ✅ Completed
 
 ### Objectives
 
 - Add exception handling module.
-- Create Mustache templates and web forms for frontend representation. 
-- Implement routes for item offers and integrate them with templates. 
-- Conduct partial peer reviews to identify logic or integration errors. 
+- Create Mustache templates and web forms for frontend representation.
+- Implement routes for item offers and integrate them with templates.
+- Conduct partial peer reviews to identify logic or integration errors.
 - Push deliverables with consistent documentation.
 
 ### Deliverables
 
-- ExceptionHandler.java for error responses, centralized exception module created. 
-- Offer and View templates (offers.mustache, etc.). 
-- Peer review notes (docs/peer-review.md). 
-- Updated repository structure with frontend assets. 
+- ExceptionHandler.java for error responses, centralized exception module created.
+- Offer and View templates (offers.mustache, etc.).
+- Peer review notes (docs/peer-review.md).
+- Updated repository structure with frontend assets.
 - Web Forms:
-  - OffersControllers.java created to manage item offers. 
-  - offers.mustache and offer-form.mustache templates created to display and submit offers. 
+  - OffersControllers.java created to manage item offers.
+  - offers.mustache and offer-form.mustache templates created to display and submit offers.
   - styles.css created and served from the /public static file location.
 
-## ⚡ Stage 3 — Upcoming
+## ⚡ Stage 3 — Completed
 
-## Status: 🔜 Planned
+## Status: 🔜 Completed
+
 ### Objectives
 
-- Introduce a project checklist to validate all completed features. 
-- Add item filters (by category, price, availability). 
-- Implement WebSocket for real-time price updates. 
-- Perform final peer verification and documentation updates. 
-- Push deliverables and finalize project for submission.
+Sprint 3 — Overview
 
-### Deliverables
+Sprint 3 focused on moving the application from hard-coded sample data toward a maintainable, data-driven design and on completing full filtering and real-time update capabilities. The main goals were: (1) load initial items from a JSON resource, (2) centralize filter logic, and (3) add real-time price broadcasting.
 
-- FilterService.java for item criteria. 
-- PriceWebSocket.java for live updates. 
-- Updated README.md and final report. 
-- Complete feature checklist (docs/checklist.md).
+Objectives
+Replace hard-coded sample items with a classpath JSON resource (src/main/resources/data/items.json) to make initial data editable without recompiling.
+Implement robust loading of JSON data with safe fallback to sample data.
+Delegate all item filter logic (category, price range, availability) to a dedicated FilterService.
+Ensure the front-end templates can display images and categories loaded from the JSON.
+Prepare the app for real-time price updates via PriceWebSocket (broadcasting price updates to connected clients).
+
+### What was implemented:
+
+Data-driven initialization:
+Added src/main/resources/data/items.json containing the initial items with fields: id, name, description, price, category, imageUrl, available.
+Updated ItemService to load items from the classpath resource using Gson. If loading fails (missing file or parse errors), the service falls back to a small in-memory sample dataset so the site remains functional.
+Filtering:
+All filtering logic is handled by FilterService (single responsibility). The ItemService#getAllItems(...) method parses HTTP-style query values (strings) into the proper types (Double/Boolean) and delegates.
+Images and categories:
+JSON entries include imageUrl and category so mustache templates can render images and category labels exactly like the original hard-coded dataset.
+Real-time updates:
+PriceWebSocket is prepared to broadcast updates; integration points are available for other services (e.g., PriceUpdateService) to publish price changes to WebSocket clients.
+Documentation:
+Javadoc added to ItemService and a README update describing Sprint 3 changes and testing steps.
+
+### How to test / QA checklist
+
+ 1. Build and run the app:
+       mvn clean compile exec:java
+
+2. Open the store page:
+       http://localhost:4567/tienda
+       Verify items are shown and images are displayed (images served from src/main/resources/public/images).
+
+3. API verification:
+- GET /api/items (or your equivalent endpoint) should return items consistent with data/items.json.
+- Try query filters, e.g.:
+- /api/items?categoria=Ropa
+- -api/items?precioMin=300&precioMax=700
+- /api/items?disponible=true
+
+4. Negative / fallback test:
+- Temporarily rename or remove data/items.json and restart the app. The server should fall back to the internal sample dataset and still serve items (useful for demos).
+
+5. WebSocket smoke test:
+- Open a WebSocket client (or the front-end page that connects) to the configured path (e.g., /precios).
+Trigger a price update via the app (or via PriceUpdateService) and confirm clients receive the update broadcast.
+
+6. Static assets check:
+Confirm image filenames referenced in items.json exist under src/main/resources/public/images and load correctly.
+
+
+### Acceptance criteria
+- Items are loaded from data/items.json at startup when file is present and valid.
+- When data/items.json is missing/invalid, the app uses the hard-coded fallback dataset and starts successfully.
+- Filtering by category, price range, and availability returns the expected subsets.
+- Templates display item images and categories matching the JSON data.
+- WebSocket broadcasts are received by connected clients when prices change (end-to-end manual validation acceptable for demo).
+
+
+### Implementation notes / developer hints
+
+- JSON parsing uses Gson (already included in pom.xml). The ItemService contains a small helper internal type to map JSON fields to Item POJOs.
+
+- Prices in the JSON are stored as strings like "$621.34 USD" to preserve formatting. The service converts these to numeric prices for filtering and arithmetic.
+Keep the fallback sample for demo reliability, or remove it if you prefer a strict startup validation that fails when the JSON is missing.
+
+- If you change the JSON structure, update the helper type and parsePrice logic accordingly.
+Recommended future improvements: add unit tests for JSON loading and filtering, and expose an admin endpoint to reload the JSON without restarting.
 
 ## ▶️ How to Run the Project
 
@@ -205,12 +258,14 @@ Status: ✅ Completed
 git clone https://github.com/<username>/Technoready_c6_Collectors.git
 cd Technoready_c6_Collectors
 ```
+
 Build and run using Maven:
 
 ```bash
 
 mvn clean compile exec:java
 ```
+
 Access API in your browser or Postman:
 
 ```text
@@ -244,9 +299,9 @@ The server is now running! Access the application at:
 
 - POST /offers: Creates a new offer (API).
 
-
 ## 🗂 Repository Structure
-``` text
+
+```text
 Collectors_ecommerce/
 │
 ├── pom.xml
