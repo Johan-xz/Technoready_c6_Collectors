@@ -3,31 +3,54 @@ package org.johan.models;
 public class Item {
     private String id;
     private final String name;
-    private final double price;
+    private double price;
     private final String category;
-    
-    // --- CAMBIO AQUI ---
-    // Adjuntamos un campo 'available' para que el FilterService funcione
-    private boolean available; 
+    private String imageUrl;
+    private boolean available;
 
-    public Item(String id, String name, double price, String category) {
+    public Item(String id, String name, double price, String category, String imageUrl) {
         this.id = id;
         this.name = name;
         this.price = price;
         this.category = category;
-        this.available = true; // Hacemos que todos los items nuevos estén disponibles
+        this.imageUrl = imageUrl;
+        this.available = true;
     }
 
     // Getters y Setters
-    public String getId() { return id; }
-    public String getName() { return name; }
-    public double getPrice() { return price; }
-    public String getCategory() { return category; }
-    
-    // --- CAMBIO AQUI ---
-    // Adjuntamos el getter que faltaba
-    public boolean isAvailable() { return available; } 
-    
-    public void setId(String id) { this.id = id; }
-    public void setAvailable(boolean available) { this.available = available; }
+    public String getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public String getCategory() {
+        return category;
+    }
+
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public boolean isAvailable() {
+        return available;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setAvailable(boolean available) {
+        this.available = available;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
 }

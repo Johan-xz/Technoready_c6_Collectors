@@ -1,33 +1,61 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Crear Nueva Oferta</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+{{>_header}}
 <div class="container">
-    <h1>Crear Nueva Oferta</h1>
-    <p><a href="/offers-web">Volver a Ofertas</a></p>
+    <h1>Create New Bid</h1>
+    
+    <div style="margin-bottom: 2rem;">
+        <a href="/offers-web" class="btn btn-secondary">← Back to Offers</a>
+    </div>
 
     {{#error}}
-        <div class="alert alert-danger">{{error}}</div>
+    <div class="alert alert-danger">
+        {{error}}
+    </div>
     {{/error}}
 
-    <form action="/offers/new" method="post">
-        <div class="form-group">
-            <label for="itemId">ID del Artículo:</label>
-            <input type="text" id="itemId" name="itemId" value="{{offer.itemId}}" required>
-        </div>
-        <div class="form-group">
-            <label for="discountPercentage">Porcentaje de Descuento (%):</label>
-            <input type="number" id="discountPercentage" name="discountPercentage" value="{{offer.discountPercentage}}" step="1" min="1" max="100" required>
-        </div>
-        <div class="form-group">
-            <label for="validUntil">Válido Hasta (YYYY-MM-DD):</label>
-            <input type="date" id="validUntil" name="validUntil" value="{{offer.validUntil}}" required>
-        </div>
-        <button type="submit" class="btn btn-success">Guardar Oferta</button>
-    </form>
+    <div class="form-section">
+        <h2>Bid Information</h2>
+        <form action="/offers/new" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="itemId">Item ID</label>
+                    <input 
+                        type="text" 
+                        id="itemId" 
+                        name="itemId" 
+                        value="{{offer.itemId}}" 
+                        required
+                        placeholder="Enter the item ID"
+                    >
+                    <small style="color: #757575; font-size: 0.85rem;">
+                        You can find the ID on the store page
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="bidAmount">Bid Amount ($)</label>
+                    <input 
+                        type="number"
+                        id="bidAmount"
+                        name="bidAmount"
+                        value="{{offer.currentBid}}" 
+                        step="1" 
+                        min="1" 
+                        required
+                        placeholder="e.g., 100"
+                    >
+                    <small style="color: #757575; font-size: 0.85rem;">
+                        Enter your maximum bid
+                    </small>
+                </div>
+                <div class="form-group">
+                    <label for="bidder">Bidder Name</label>
+                    <input type="text" id="bidder" name="bidder" value="{{offer.bidder}}" placeholder="Your name or alias" required>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">Place Bid</button>
+                <a href="/offers-web" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
 </div>
-</body>
-</html>
+{{>_footer}}

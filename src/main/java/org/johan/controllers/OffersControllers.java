@@ -51,16 +51,16 @@ public class OffersControllers {
             return gson.toJson(offer);
         });
 
-        // POST /offers -> create a new offer
+        // POST /offers -> create a new bid/auction entry
         post("/offers", (req, res) -> {
             res.type("application/json");
             Offer newOffer = gson.fromJson(req.body(), Offer.class);
-            // Validación básica para campos obligatorios de Offer
+            // Validación básica para subastas
             if (newOffer == null || newOffer.getItemId() == null || newOffer.getItemId().trim().isEmpty()) {
-                throw new ValidationException("El ID de item es obligatorio en una oferta");
+                throw new ValidationException("El ID de item es obligatorio en una puja");
             }
-            if (newOffer.getDiscountPercentage() <= 0 || newOffer.getDiscountPercentage() > 100) {
-                throw new ValidationException("El porcentaje de descuento debe ser mayor a 0 y menor o igual a 100");
+            if (newOffer.getCurrentBid() <= 0) {
+                throw new ValidationException("La puja debe ser mayor que 0");
             }
             Offer createdOffer = offerService.addOffer(newOffer);
             res.status(201);
@@ -72,6 +72,8 @@ public class OffersControllers {
             System.out.println("[OffersControllers] GET /offers-web");
             List<Offer> offers = offerService.getAllOffers();
             HashMap<String, Object> model = new HashMap<>();
+            model.put("pageTitle", "Ofertas");
+            model.put("activeOffers", true);
             model.put("offers", offers);
             String message = req.queryParams("message");
             if ("oferta-creada".equals(message)) {
@@ -87,40 +89,41 @@ public class OffersControllers {
         });
         get("/offers/new", (req, res) -> {
             HashMap<String, Object> model = new HashMap<>();
+            model.put("pageTitle", "Crear Oferta");
+            model.put("activeOffers", true);
             return new MustacheTemplateEngine()
                 .render(new ModelAndView(model, "offer-form.mustache"));
         });
         post("/offers/new", (req, res) -> {
             String itemId = req.queryParams("itemId");
-            String discountStr = req.queryParams("discountPercentage");
-            String validUntil = req.queryParams("validUntil");
+            String bidStr = req.queryParams("bidAmount");
+            String bidder = req.queryParams("bidder");
             HashMap<String, Object> model = new HashMap<>();
-            double discount = 0.0;
+            double bid = 0.0;
             String error = null;
             try {
                 if (itemId == null || itemId.trim().isEmpty()) {
                     throw new ValidationException("El ID de item es obligatorio");
                 }
-                if (discountStr == null || discountStr.trim().isEmpty()) {
-                    throw new ValidationException("El descuento es obligatorio");
+                if (bidStr == null || bidStr.trim().isEmpty()) {
+                    throw new ValidationException("La puja es obligatoria");
                 }
-                discount = Double.parseDouble(discountStr);
-                if (discount <= 0 || discount > 100) {
-                    throw new ValidationException("El porcentaje de descuento debe ser mayor a 0 y menor o igual a 100");
+                bid = Double.parseDouble(bidStr);
+                if (bid <= 0) {
+                    throw new ValidationException("La puja debe ser mayor a 0");
                 }
-                if (validUntil == null || validUntil.trim().isEmpty()) {
-                    throw new ValidationException("La fecha de validez es obligatoria");
-                }
-                // Crear y guardar oferta
-                Offer offer = new Offer(itemId, discount, validUntil);
+                // Crear y guardar puja
+                Offer offer = new Offer(itemId, bid, bidder);
                 offerService.addOffer(offer);
                 res.redirect("/offers-web?message=oferta-creada");
                 return null;
             } catch (ValidationException | NumberFormatException ve) {
                 error = ve.getMessage();
             }
+            model.put("pageTitle", "Crear Oferta");
+            model.put("activeOffers", true);
             model.put("error", error);
-            model.put("offer", new Offer(itemId, discount, validUntil));
+            model.put("offer", new Offer(itemId, bid, bidder));
             return new MustacheTemplateEngine().render(new ModelAndView(model, "offer-form.mustache"));
         });
         // Ruta de diagnóstico rápida para validar el registro del controlador

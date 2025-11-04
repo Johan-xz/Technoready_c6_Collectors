@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{pageTitle}} - Collectors Store</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <header>
+        <div class="header-content">
+            <h1>Collectors Store</h1>
+            <p class="tagline">Your collectible items marketplace</p>
+            <nav>
+                <a href="/tienda" class="nav-link {{#activeTienda}}active{{/activeTienda}}">Store</a>
+                <a href="/offers-web" class="nav-link {{#activeOffers}}active{{/activeOffers}}">Offers</a>
+                <a href="/users-web" class="nav-link {{#activeUsers}}active{{/activeUsers}}">Users</a>
+            </nav>
+        </div>
+    </header>
+    <main class="main-content">

@@ -1,5 +1,9 @@
 package org.johan.controllers;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.johan.exceptions.ConflictException;
 import org.johan.exceptions.NotFoundException;
 import org.johan.exceptions.ValidationException;
 import org.johan.models.User;
@@ -7,17 +11,30 @@ import org.johan.services.UserService;
 
 import com.google.gson.Gson;
 
+import spark.ModelAndView;
 import spark.Request;
 import spark.Response;
+import spark.template.mustache.MustacheTemplateEngine;
 
 public class UserController {
 
     private final UserService userService;
-    private  final Gson gson;
+    private final Gson gson;
+    private final MustacheTemplateEngine mustacheEngine;
 
     public UserController(UserService userService, Gson gson) {
         this.userService = userService;
         this.gson = gson;
+        this.mustacheEngine = new MustacheTemplateEngine();
+    }
+    
+    // GET /users-web - Renderiza la vista HTML de usuarios
+    public String renderUsers(Request req, Response res) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("pageTitle", "Users");
+        model.put("activeUsers", true);
+        model.put("users", userService.getAllUsers());
+        return mustacheEngine.render(new ModelAndView(model, "users.mustache"));
     }
 
     // GET /users
@@ -40,14 +57,27 @@ public class UserController {
         }
     }
     
-    // POST /users (MODIFICADO)
+    // POST /users/:id - Sprint 1: Según requisitos, POST debe incluir el ID en la ruta
     public String createUser(Request req, Response res) {
         res.type("application/json");
+        String id = req.params(":id");
         User newUser = gson.fromJson(req.body(), User.class);
+        
+        // Asignar el ID de la ruta al usuario
+        if (newUser.getId() == null) {
+            newUser.setId(id);
+        } else if (!newUser.getId().equals(id)) {
+            throw new ValidationException("El ID en el body no coincide con el ID de la ruta");
+        }
 
-        // (C2) Añadimos una validación simple
+        // Validación de campos obligatorios
         if (newUser.getName() == null || newUser.getName().isEmpty()) {
             throw new ValidationException("El campo 'name' es obligatorio");
+        }
+        
+        // Verificar si el usuario ya existe
+        if (userService.userExists(id)) {
+            throw new ConflictException("Ya existe un usuario con el ID: " + id);
         }
         
         User createdUser = userService.createUser(newUser);

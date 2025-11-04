@@ -1,33 +1,48 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Ofertas Especiales</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
+{{>_header}}
 <div class="container">
-    <h1>Ofertas Especiales</h1>
-    <p>
-        <a href="/tienda">Volver a la tienda</a> | 
-        <a href="/offers/new" class="btn btn-success">Crear Nueva Oferta</a>
-    </p>
+    <h1>Auctions</h1>
+    
+    <div class="form-actions" style="margin-bottom: 2rem;">
+        <a href="/tienda" class="btn btn-secondary">← Back to Store</a>
+        <a href="/offers/new" class="btn btn-success">Create New Offer</a>
+    </div>
 
     {{#message}}
-        <div class="alert alert-success">{{message}}</div>
+    <div class="alert alert-success">
+        {{message}}
+    </div>
     {{/message}}
 
-    <h2>Ofertas Activas</h2>
+    <h2>Active Bids</h2>
+    
+    {{#offers}}
     <div class="offer-list">
         {{#offers}}
-            <div class="offer-card">
-                <p><strong>Item ID:</strong> {{itemId}}</p>
-                <p><strong>Descuento:</strong> {{discountPercentage}}%</p>
-                <p><strong>Válido hasta:</strong> {{validUntil}}</p>
-            </div>
-        {{/offers}}  {{^offers}}
-            <p>No hay ofertas especiales en este momento.</p>
+        <div class="offer-card">
+            <h3>Current Highest Bid</h3>
+            <div class="offer-discount">${{currentBid}}</div>
+            <p>
+                <strong>Item ID:</strong>
+                <span class="offer-item-id">{{itemId}}</span>
+            </p>
+            <p class="offer-valid-until">
+                Bidder: <strong>{{bidder}}</strong>
+            </p>
+        </div>
         {{/offers}}
     </div>
+    {{/offers}}
+    
+    {{^offers}}
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p>No special offers at this time.</p>
+        <p style="margin-top: 1rem;">
+            <a href="/offers/new" class="btn btn-success" style="margin-top: 1rem;">
+                Create First Offer
+            </a>
+        </p>
+    </div>
+    {{/offers}}
 </div>
-</body>
-</html>
+{{>_footer}}

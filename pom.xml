@@ -30,10 +30,11 @@
 </dependency>
 
 
+        <!-- Logback dependency -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.32</version>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.4.14</version>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>

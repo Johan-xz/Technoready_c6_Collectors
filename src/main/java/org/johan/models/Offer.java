@@ -3,24 +3,24 @@ package org.johan.models;
 import java.util.UUID;
 
 /**
- * Represents a promotional offer associated with an item.
+ * Represents an auction bid associated with an item.
  */
 public class Offer {
 
     private String id;
     private String itemId;
-    private double discountPercentage;
-    private String validUntil;
+    private double currentBid; 
+    private String bidder;     
 
     public Offer() {
         this.id = UUID.randomUUID().toString();
     }
 
-    public Offer(String itemId, double discountPercentage, String validUntil) {
+    public Offer(String itemId, double currentBid, String bidder) {
         this.id = UUID.randomUUID().toString();
         this.itemId = itemId;
-        this.discountPercentage = discountPercentage;
-        this.validUntil = validUntil;
+        this.currentBid = currentBid;
+        this.bidder = bidder;
     }
 
     // Getters & Setters
@@ -40,19 +40,8 @@ public class Offer {
         this.itemId = itemId;
     }
 
-    public double getDiscountPercentage() {
-        return discountPercentage;
-    }
-
-    public void setDiscountPercentage(double discountPercentage) {
-        this.discountPercentage = discountPercentage;
-    }
-
-    public String getValidUntil() {
-        return validUntil;
-    }
-
-    public void setValidUntil(String validUntil) {
-        this.validUntil = validUntil;
-    }
+    public double getCurrentBid() { return currentBid; }
+    public void setCurrentBid(double currentBid) { this.currentBid = currentBid; }
+    public String getBidder() { return bidder; }
+    public void setBidder(String bidder) { this.bidder = bidder; }
 }
