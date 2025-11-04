@@ -1,83 +1,115 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tienda de Ramón</title>
-    <link rel="stylesheet" href="/styles.css">
-</head>
-<body>
-<div class="container"> 
-    <h1>Bienvenido a la Tienda de Coleccionables, {{username}}!</h1>
+{{>_header}}
+<div class="container">
+    <h1>Collectibles Store</h1>
+    <p class="text-center" style="color: #757575; margin-bottom: 2rem;">
+        Welcome, <strong>{{username}}</strong>! Explore our unique collection of items.
+    </p>
 
-    <form action="/tienda" method="get">
-        <div>
-            <label for="categoria">Filtrar por Categoría:</label>
-            <input type="text" id="categoria" name="categoria" value="{{filtroCategoria}}">
-            
-            <label for="precioMax">Precio Máximo:</label>
-            <input type="number" id="precioMax" name="precioMax" step="0.01" value="{{filtroPrecio}}">
-            
-            <button type="submit" class="btn">Filtrar</button>
-            <a href="/tienda">Limpiar Filtros</a>
-        </div>
-    </form>
+    <!-- Filters -->
+    <div class="filter-section">
+        <h3>Filter Items</h3>
+        <form action="/tienda" method="get">
+            <div class="filter-grid">
+                <div class="form-group">
+                    <label for="categoria">Category</label>
+                    <input type="text" id="categoria" name="categoria" value="{{filtroCategoria}}" placeholder="e.g., Toys, Comics">
+                </div>
+                <div class="form-group">
+                    <label for="precioMin">Min Price</label>
+                    <input type="number" id="precioMin" name="precioMin" step="0.01" min="0" value="{{filtroPrecioMin}}" placeholder="0.00">
+                </div>
+                <div class="form-group">
+                    <label for="precioMax">Max Price</label>
+                    <input type="number" id="precioMax" name="precioMax" step="0.01" min="0" value="{{filtroPrecioMax}}" placeholder="999.99">
+                </div>
+                <div class="form-group">
+                    <label for="disponible">Availability</label>
+                    <select id="disponible" name="disponible">
+                        <option value="" {{^filtroDisponible}}selected{{/filtroDisponible}}>All</option>
+                        <option value="true" {{#filtroDisponible}}{{#isTrue}}selected{{/isTrue}}{{/filtroDisponible}}>Available Only</option>
+                        <option value="false" {{#filtroDisponible}}{{#isFalse}}selected{{/isFalse}}{{/filtroDisponible}}>Unavailable Only</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">Apply Filters</button>
+                <a href="/tienda" class="btn btn-secondary">Clear Filters</a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Form to add new item -->
+    <div class="form-section">
+        <h2>Sell New Item</h2>
+        <form action="/items" method="post">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="itemName">Item Name</label>
+                    <input type="text" id="itemName" name="itemName" required placeholder="e.g., Funko Pop Batman">
+                </div>
+                <div class="form-group">
+                    <label for="itemCategory">Category</label>
+                    <input type="text" id="itemCategory" name="itemCategory" required placeholder="e.g., Toys, Comics">
+                </div>
+                <div class="form-group">
+                    <label for="itemPrice">Price ($)</label>
+                    <input type="number" id="itemPrice" name="itemPrice" step="0.01" min="0" required placeholder="0.00">
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-success">List for Sale</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Items List -->
+    <h2>Available Items</h2>
     
-    <hr>
-    
-    <h2>Vender un nuevo Artículo</h2>
-    <form action="/items" method="post">
-        <div>
-            <label for="itemName">Nombre:</label>
-            <input type="text" id="itemName" name="itemName" required>
-        </div>
-        <div>
-            <label for="itemPrice">Precio:</label>
-            <input type="number" id="itemPrice" name="itemPrice" step="0.01" min="0" required>
-        </div>
-        <div>
-            <label for="itemCategory">Categoría:</label>
-            <input type="text" id="itemCategory" name="itemCategory">
-        </div>
-        <button type="submit" class="btn btn-success">Poner en Venta</button>
-    </form>
-    
-    <hr>
-    
-    <h2>Artículos Actuales</h2>
-    <ul class="item-list"> 
+    {{#hasItems}}
+    <div class="item-list">
         {{#items}}
-            <li class="item-card">
-                <strong>{{name}}</strong> ({{category}}) - 
-                $<span id="precio-{{id}}">{{price}}</span>
-                
-                <form onsubmit="enviarPuja(event, '{{id}}')">
-                    <input type="number" step="0.01" id="puja-{{id}}" placeholder="Nuevo precio">
-                    <button type="submit" class="btn">Pujar</button>
+        <div class="item-card">
+            {{#imageUrl}}
+            <div class="item-image">
+                <img src="/images/{{imageUrl}}" alt="{{name}}" class="product-image">
+            </div>
+            {{/imageUrl}}
+            <div class="item-header">
+                <div>
+                    <h3 class="item-name">{{name}}</h3>
+                    <span class="item-category">{{category}}</span>
+                </div>
+            </div>
+            <div class="item-price-section">
+                <div class="price-label">Current Price</div>
+                <div class="item-price" id="precio-{{id}}">${{price}}</div>
+            </div>
+            <div class="bid-form">
+                <label for="puja-{{id}}" style="font-weight: 500; color: #424242; margin-bottom: 0.5rem; display: block;">
+                    Make a Bid
+                </label>
+                <form onsubmit="enviarPuja(event, '{{id}}')" class="bid-input-group">
+                    <input 
+                        type="number" 
+                        step="0.01" 
+                        min="0"
+                        id="puja-{{id}}" 
+                        placeholder="Enter your bid"
+                        required>
+                    <button type="submit" class="btn btn-primary">Bid</button>
                 </form>
-            </li>
+            </div>
+        </div>
         {{/items}}
-        
-        {{^items}}
-            <p>Aún no hay artículos en venta.</p>
-        {{/items}}
-    </ul>
-
-</div> <script>
-    console.log("Conectando al WebSocket...");
-    const ws = new WebSocket("ws://localhost:4567/precios");
-    // ... (resto de tu script) ...
-    function enviarPuja(event, itemId) {
-        event.preventDefault(); 
-        const inputPuja = document.getElementById("puja-" + itemId);
-        const nuevoPrecio = inputPuja.value;
-        if (!nuevoPrecio || nuevoPrecio <= 0) {
-            alert("Introduce un precio válido.");
-            return;
-        }
-        const mensaje = `${itemId}:${nuevoPrecio}`;
-        ws.send(mensaje); 
-        inputPuja.value = "";
-    }
-</script>
-
-</body>
-</html>
+    </div>
+    {{/hasItems}}
+    
+    {{^hasItems}}
+    <div class="empty-state">
+        <div class="empty-state-icon">📦</div>
+        <p>No items available at this time.</p>
+        <p style="margin-top: 1rem;">Be the first to add an item!</p>
+    </div>
+    {{/hasItems}}
+</div>
+{{>_footer}}

@@ -1,0 +1,47 @@
+{{>_header}}
+<div class="container">
+    <h1>Users</h1>
+    
+    <div style="margin-bottom: 2rem;">
+        <a href="/tienda" class="btn btn-secondary">← Back to Store</a>
+    </div>
+
+    <h2>Registered Users</h2>
+    
+    {{#users}}
+    <div class="user-list">
+        {{#users}}
+        <div class="user-card">
+            <div class="user-header">
+                <h3 class="user-name">{{name}}</h3>
+                <span class="user-id">ID: {{id}}</span>
+            </div>
+            <div class="user-info">
+                <p class="user-email">{{email}}</p>
+            </div>
+        </div>
+        {{/users}}
+    </div>
+    {{/users}}
+    
+    {{^users}}
+    <div class="empty-state">
+        <div class="empty-state-icon">👤</div>
+        <p>No users registered at this time.</p>
+    </div>
+    {{/users}}
+    
+    <div class="api-info">
+        <h3>API Endpoints</h3>
+        <p>For API access, use the following endpoints:</p>
+        <ul class="endpoint-list">
+            <li><code>GET /api/users</code> - Get all users</li>
+            <li><code>GET /api/users/:id</code> - Get user by ID</li>
+            <li><code>POST /api/users/:id</code> - Create a user</li>
+            <li><code>PUT /api/users/:id</code> - Update a user</li>
+            <li><code>DELETE /api/users/:id</code> - Delete a user</li>
+        </ul>
+    </div>
+</div>
+{{>_footer}}
+

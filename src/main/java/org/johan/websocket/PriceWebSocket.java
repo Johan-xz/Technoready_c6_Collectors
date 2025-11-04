@@ -1,6 +1,5 @@
 package org.johan.websocket;
 
-
 import java.io.IOException;
 import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -34,14 +33,15 @@ public class PriceWebSocket {
         // Asumimos que el mensaje es una puja: "ITEM_ID:NUEVO_PRECIO"
         // Ej: "uuid-1234-abcd:150.99"
         System.out.println("Puja recibida: " + message);
-        
+
         // (C2) Estrategia: Re-transmitir (broadcast) el mensaje
         // a TODOS los clientes conectados (incluido el que lo envió)
-        broadcast(message);
+        PriceWebSocket.broadcast(message);
     }
 
-    // Método para enviar el mensaje a todos
-    private void broadcast(String message) {
+    // Método estático para enviar el mensaje a todos los clientes conectados
+    // Esto permite que PriceUpdateService pueda llamarlo sin necesidad de una instancia
+    public static void broadcast(String message) {
         for (Session session : sessions) {
             if (session.isOpen()) {
                 try {

@@ -13,10 +13,10 @@ public class OfferService {
     private final List<Offer> offers = new ArrayList<>();
 
     public OfferService() {
-        // preload some sample offers
-        offers.add(new Offer("1", 10.0, "2025-12-31"));
-        offers.add(new Offer("2", 25.0, "2025-10-15"));
-        offers.add(new Offer("3", 15.0, "2025-09-30"));
+        // preload some sample bids
+        offers.add(new Offer("1", 150.0, "Alice"));
+        offers.add(new Offer("2", 90.0, "Bob"));
+        offers.add(new Offer("3", 320.0, "Carol"));
     }
 
     /** Retrieve all available offers **/
@@ -48,8 +48,8 @@ public class OfferService {
         for (Offer offer : offers) {
             if (offer.getId().equals(id)) {
                 offer.setItemId(updatedOffer.getItemId());
-                offer.setDiscountPercentage(updatedOffer.getDiscountPercentage());
-                offer.setValidUntil(updatedOffer.getValidUntil());
+                offer.setCurrentBid(updatedOffer.getCurrentBid());
+                offer.setBidder(updatedOffer.getBidder());
                 return offer;
             }
         }

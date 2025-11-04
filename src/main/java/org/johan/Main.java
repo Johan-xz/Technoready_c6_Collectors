@@ -1,6 +1,5 @@
 package org.johan;
 
-// (Todos tus imports están correctos)
 import org.johan.controllers.ItemController;
 import org.johan.controllers.OffersControllers;
 import org.johan.controllers.UserController;
@@ -9,8 +8,9 @@ import org.johan.exceptions.NotFoundException;
 import org.johan.exceptions.ValidationException;
 import org.johan.models.ErrorResponse;
 import org.johan.services.ItemService;
+import org.johan.services.PriceUpdateService;
 import org.johan.services.UserService;
-import org.johan.websocket.PriceWebSocket; // <-- Importante
+import org.johan.websocket.PriceWebSocket;
 
 import com.google.gson.Gson;
 
@@ -23,6 +23,7 @@ import static spark.Spark.path;
 import static spark.Spark.port;
 import static spark.Spark.post;
 import static spark.Spark.put;
+import static spark.Spark.redirect;
 import static spark.Spark.staticFiles;
 import static spark.Spark.webSocket;
 
@@ -41,6 +42,7 @@ public class Main {
         Gson gson = new Gson();
         UserService userService = new UserService();
         ItemService itemService = new ItemService();
+        PriceUpdateService priceUpdateService = new PriceUpdateService(itemService);
         UserController userController = new UserController(userService, gson);
         ItemController itemController = new ItemController(itemService);
         
@@ -76,18 +78,41 @@ public class Main {
         path("/api", () -> {
             path("/users", () -> {
                 get("", userController::getAllUsers);
-                // Aquí faltaban tus otras rutas de user, las añado:
                 get("/:id", userController::getUserById);
-                post("", userController::createUser); 
+                post("/:id", userController::createUser); // Sprint 1: POST /users/:id según requisitos
                 put("/:id", userController::updateUser);
                 options("/:id", userController::checkUserExists);
                 delete("/:id", userController::deleteUser);
             });
+            
+            // Ruta para actualizar precios (Sprint 3)
+            path("/items", () -> {
+                post("/:id/price", (req, res) -> {
+                    res.type("application/json");
+                    String itemId = req.params(":id");
+                    try {
+                        double newPrice = Double.parseDouble(req.body());
+                        var updatedItem = priceUpdateService.updatePrice(itemId, newPrice);
+                        return gson.toJson(updatedItem);
+                    } catch (NumberFormatException e) {
+                        throw new ValidationException("El precio debe ser un número válido");
+                    } catch (IllegalArgumentException e) {
+                        throw new ValidationException(e.getMessage());
+                    }
+                });
+            });
+        });
+
+        // Ruta raíz - redirige a la tienda
+        get("/", (req, res) -> {
+            res.redirect("/tienda");
+            return null;
         });
 
         // Rutas WEB (Sprint 2)
         get("/tienda", itemController::renderTienda);
         post("/items", itemController::createItem);
+        get("/users-web", userController::renderUsers);
 
         // --- 5. INICIAR SERVIDOR (DEBE IR AL FINAL) ---
         // init() siempre debe ir después de definir TODAS las rutas.
